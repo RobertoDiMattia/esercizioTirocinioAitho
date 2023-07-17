@@ -1,24 +1,29 @@
 package com.example.demo.model;
 
-import java.util.UUID;
+import jakarta.persistence.*;
 
+@Entity
 public class Person {
 
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    private Long id;
+
+    @Column(name = "name")
     private String name;
 
     public Person(){}
 
-    public Person(UUID id, String name){
+    public Person(Long id, String name){
         this.id = id;
         this.name = name;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

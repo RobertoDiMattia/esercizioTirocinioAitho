@@ -1,5 +1,6 @@
 package com.example.demo.api;
 
+import com.example.demo.model.Job;
 import com.example.demo.model.Person;
 import com.example.demo.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,8 @@ public class PersonController {
 
     @PostMapping("/create")
     public String addPerson(@RequestBody Person person) {
-        return personService.addPerson(person);
+        personService.addPerson(person);
+        return "Person created successfully";
     }
 
     @GetMapping
@@ -28,4 +30,8 @@ public class PersonController {
         return personService.getAllPersons();
     }
 
+    @GetMapping("/jobByPerson")
+    public Job getJobByPerson(@RequestParam("name") String name) {
+        return personService.retrieveJobByPersonNameAndSurname(name);
+    }
 }
