@@ -58,7 +58,6 @@ public class PersonService {
     }
 
     public List<String> getNamesByChar(String letter) {
-        // Esegui la logica di recupero dei nomi dal repository
         return personRepository.findByFirstLetter(letter);
     }
 

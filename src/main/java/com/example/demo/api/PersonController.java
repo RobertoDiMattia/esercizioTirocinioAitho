@@ -1,9 +1,13 @@
 package com.example.demo.api;
 
+import com.example.demo.exception.BadRequestException;
+import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.Job;
 import com.example.demo.model.Person;
 import com.example.demo.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -52,26 +56,23 @@ public class PersonController {
         return "Person deleted successfully";
     }
 
-    //Per Senpai (esercizio n. 5), l'ho provato e funziona
-    // inizialmente ho provato a farlo con tipo oggetto Character (non mi funzionava)
     @GetMapping("/getNamesByChar")
-    public String getNamesByChar(@RequestParam("letter") String letter) {
-
+    public ResponseEntity<String> getNamesByChar(@RequestParam("letter") String letter) {
         if (!isValidInput(letter)) {
-            return "Error, input non valido";
+            throw new BadRequestException("Error 400");
         }
 
         List<String> names = personService.getNamesByChar(letter);
 
         if (names.isEmpty()) {
-            return "Nessuna persona trovata";
+            throw new NotFoundException("Error 404");
         } else {
-            return String.join(", ", names);
+            String response = String.join(", ", names);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
     }
 
     private boolean isValidInput(String input) {
         return input.matches("[a-zA-Z]+");
     }
-
 }
