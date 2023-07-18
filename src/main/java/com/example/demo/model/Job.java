@@ -16,14 +16,15 @@ public class Job {
     @JoinColumn(name = "person_id", referencedColumnName = "id")
     private Person person;
 
-    private String name;
+    @Column(name = "job_name")
+    private String jobName;
 
     public Job(){}
 
-    public Job(Long id, Person person, String name) {
+    public Job(Long id, Person person, String jobName) {
         this.id = id;
         this.person = person;
-        this.name = name;
+        this.jobName = jobName;
     }
 
     public Long getPersonId() {
@@ -53,11 +54,11 @@ public class Job {
         this.person = person;
     }
 
-    public String getName() {
-        return name;
+    public String getJobName() {
+        return jobName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setJobName(String jobName) {
+        this.jobName = jobName;
     }
 }

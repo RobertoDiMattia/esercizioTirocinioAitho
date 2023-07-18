@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class PersonService {
@@ -31,10 +32,35 @@ public class PersonService {
         return personRepository.findByName(name);
     }
 
-    public Job retrieveJobByPersonNameAndSurname(String name) {
+    public Job retrieveJobByPersonName(String name) {
         Person person = personRepository.findByName(name);
         return jobRepository.findByPersonId(person.getId());
 
     }
+
+    public Job retrieveJobByPersonNameAndSurname(String name, String surname) {
+        Person person = personRepository.findByNameAndSurname(name,surname);
+        return jobRepository.findByPersonId(person.getId());
+    }
+
+    public void updatePerson(Long id, Person updatedPerson) {
+        Person personToUpdate = personRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Person not found with id: " + id));
+
+        personToUpdate.setName(updatedPerson.getName());
+        personToUpdate.setSurname(updatedPerson.getSurname());
+
+        personRepository.save(personToUpdate);
+    }
+
+    public void deletePerson(Long id) {
+        personRepository.deleteById(id);
+    }
+
+    public List<String> getNamesByChar(String letter) {
+        // Esegui la logica di recupero dei nomi dal repository
+        return personRepository.findByFirstLetter(letter);
+    }
+
 }
 

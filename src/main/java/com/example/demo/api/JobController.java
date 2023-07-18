@@ -28,4 +28,15 @@ public class JobController {
     public List<Job> getAllJobs() {
         return jobService.getAllJobs();
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteJob(@PathVariable Long id) {
+        jobService.deleteJob(id);
+    }
+
+    @PutMapping("/{id}")
+    public Job updateJobName(@PathVariable Long id, @RequestBody Job updatedJob) {
+        return jobService.updateJobName(id, updatedJob.getJobName());
+    }
+
 }
