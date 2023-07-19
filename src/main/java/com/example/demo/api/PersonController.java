@@ -5,15 +5,18 @@ import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.Job;
 import com.example.demo.model.Person;
 import com.example.demo.service.PersonService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RequestMapping("api/v1/person")
 @RestController
+@Validated
 public class PersonController {
 
     private final PersonService personService;
@@ -24,9 +27,9 @@ public class PersonController {
     }
 
     @PostMapping("/create")
-    public String addPerson(@RequestBody Person person) {
+    public ResponseEntity<String> addPerson(@RequestBody @Valid Person person) {
         personService.addPerson(person);
-        return "Person created successfully";
+        return ResponseEntity.ok("person created successfully");
     }
 
     @GetMapping
@@ -40,7 +43,7 @@ public class PersonController {
     }
 
     @GetMapping("/jobByNameAndSurnamePerson")
-    public Job getJobByNaneAndSurname(@RequestParam("name") String name,@RequestParam("surname") String surname) {
+    public Job getJobByNameAndSurname(@RequestParam("name") String name,@RequestParam("surname") String surname) {
         return personService.retrieveJobByPersonNameAndSurname(name,surname);
     }
 
@@ -58,21 +61,15 @@ public class PersonController {
 
     @GetMapping("/getNamesByChar")
     public ResponseEntity<String> getNamesByChar(@RequestParam("letter") String letter) {
-        if (!isValidInput(letter)) {
-            throw new BadRequestException("Error 400");
+        try {
+            String namesByChar = personService.getNamesByChar(letter);
+            return ResponseEntity.status(HttpStatus.OK).body(namesByChar);
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (BadRequestException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Forced error: " + e.getMessage());
         }
-
-        List<String> names = personService.getNamesByChar(letter);
-
-        if (names.isEmpty()) {
-            throw new NotFoundException("Error 404");
-        } else {
-            String response = String.join(", ", names);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }
-    }
-
-    private boolean isValidInput(String input) {
-        return input.matches("[a-zA-Z]+");
     }
 }

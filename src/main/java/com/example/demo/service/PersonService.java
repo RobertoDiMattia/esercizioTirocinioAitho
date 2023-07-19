@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import com.example.demo.exception.BadRequestException;
+import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.Job;
 import com.example.demo.model.Person;
 import com.example.demo.repository.JobRepository;
@@ -57,9 +59,17 @@ public class PersonService {
         personRepository.deleteById(id);
     }
 
-    public List<String> getNamesByChar(String letter) {
-        return personRepository.findByFirstLetter(letter);
-    }
+    public String getNamesByChar(String letter) {
+        if (letter == null || letter.trim().isEmpty()) {
+            throw new BadRequestException("Il parametro 'letter' non può essere vuoto");
+        }
 
+        List<String> names = personRepository.findByFirstLetter(letter);
+        if (names.isEmpty()) {
+            throw new NotFoundException("Nessun record trovato");
+        }
+
+        return String.join(", ", names);
+    }
 }
 

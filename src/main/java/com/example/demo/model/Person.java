@@ -1,6 +1,9 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,12 +16,17 @@ public class Person {
     private Long id;
 
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
+    @NotEmpty
     private List<Job> jobs = new ArrayList<>();
 
     @Column(name = "name")
+    @NotNull
+    @NotBlank
     private String name;
 
     @Column(name = "surname")
+    @NotNull
+    @NotBlank
     private String surname;
 
     public Person(){}
