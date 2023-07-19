@@ -51,9 +51,8 @@ public class PersonController {
     }
 
     @DeleteMapping("/{id}")
-    public String deletePerson(@PathVariable Long id) {
-        personService.deletePerson(id);
-        return "Person deleted successfully";
+    public ResponseEntity<?> deletePerson(@PathVariable Long id) {
+        return ResponseEntity.ok(personService.deletePerson(id));
     }
 
     @GetMapping("/getNamesByChar")

@@ -6,6 +6,7 @@ import com.example.demo.model.Person;
 import com.example.demo.repository.JobRepository;
 import com.example.demo.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -44,7 +45,7 @@ public class PersonService {
 
     public Person updatePerson(Person updatedPerson) {
             Person person = personRepository.findById(updatedPerson.getId())
-                    .orElseThrow(() -> new NotFoundException("Error 404: Person not found with id: " + updatedPerson.getId()));
+                    .orElseThrow(() -> new NotFoundException("Person not found with id: " + updatedPerson.getId()));
 
             person.setName(updatedPerson.getName());
             person.setSurname(updatedPerson.getSurname());
@@ -52,17 +53,24 @@ public class PersonService {
             return personRepository.save(person);
     }
 
-    public void deletePerson(Long id) {
+    public ResponseEntity<?> deletePerson(Long id) {
         personRepository.deleteById(id);
+        return ResponseEntity.ok("The person with id : " + id + " is deleted");
     }
 
     public String getNamesByChar(String letter) {
 
         List<String> names = personRepository.findByFirstLetter(letter);
         if (names.isEmpty()) {
-            throw new NotFoundException("Nessun record trovato");
+            throw new NotFoundException("No records found");
         }
         return String.join(", ", names);
     }
+          // metodo precedente usando lo STREAM
+//        return names.stream().collect(Collectors.joining(", "));
+
+          // metodo precedente usando STREAM OF
+//        return stream.of(names).collect(Collectors.joining(", "));
+
 }
 
