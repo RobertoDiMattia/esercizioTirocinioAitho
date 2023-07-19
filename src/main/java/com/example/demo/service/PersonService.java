@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.Job;
 import com.example.demo.model.Person;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class PersonService {
@@ -21,9 +19,8 @@ public class PersonService {
     @Autowired
     private JobRepository jobRepository;
 
-    public String addPerson(Person person) {
-        personRepository.save(person);
-        return "added person";
+    public Person addPerson(Person person) {
+        return personRepository.save(person);
     }
 
     public List<Person> getAllPersons() {
@@ -45,14 +42,14 @@ public class PersonService {
         return jobRepository.findByPersonId(person.getId());
     }
 
-    public void updatePerson(Long id, Person updatedPerson) {
-        Person personToUpdate = personRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Person not found with id: " + id));
+    public Person updatePerson(Person updatedPerson) {
+            Person person = personRepository.findById(updatedPerson.getId())
+                    .orElseThrow(() -> new NotFoundException("Error 404: Person not found with id: " + updatedPerson.getId()));
 
-        personToUpdate.setName(updatedPerson.getName());
-        personToUpdate.setSurname(updatedPerson.getSurname());
+            person.setName(updatedPerson.getName());
+            person.setSurname(updatedPerson.getSurname());
 
-        personRepository.save(personToUpdate);
+            return personRepository.save(person);
     }
 
     public void deletePerson(Long id) {
@@ -60,15 +57,11 @@ public class PersonService {
     }
 
     public String getNamesByChar(String letter) {
-        if (letter == null || letter.trim().isEmpty()) {
-            throw new BadRequestException("Il parametro 'letter' non può essere vuoto");
-        }
 
         List<String> names = personRepository.findByFirstLetter(letter);
         if (names.isEmpty()) {
             throw new NotFoundException("Nessun record trovato");
         }
-
         return String.join(", ", names);
     }
 }

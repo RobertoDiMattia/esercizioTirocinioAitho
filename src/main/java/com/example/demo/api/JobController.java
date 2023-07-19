@@ -2,7 +2,9 @@ package com.example.demo.api;
 
 import com.example.demo.model.Job;
 import com.example.demo.service.JobService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,9 +21,8 @@ public class JobController {
     }
 
     @PostMapping("/create")
-    public String addJob(@RequestBody Job job) {
-        jobService.addJob(job);
-        return "job created successfully";
+    public ResponseEntity<Job> addJob(@RequestBody @Valid Job job) {
+        return ResponseEntity.ok(jobService.addJob(job));
     }
 
     @GetMapping

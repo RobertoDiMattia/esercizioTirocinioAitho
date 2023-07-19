@@ -17,7 +17,7 @@ public class Person {
 
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
     @NotEmpty
-    private List<Job> jobs = new ArrayList<>();
+    private List<Job> jobs;
 
     @Column(name = "name")
     @NotNull
@@ -67,14 +67,6 @@ public class Person {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public List<Job> getJobs() {
-        return jobs;
-    }
-
-    public void setJobs(List<Job> jobs) {
-        this.jobs = jobs;
     }
 
     public String getName() {

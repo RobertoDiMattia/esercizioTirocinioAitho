@@ -1,6 +1,8 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Job {
@@ -17,6 +19,8 @@ public class Job {
     private Person person;
 
     @Column(name = "job_name")
+    @NotNull
+    @NotBlank
     private String jobName;
 
     public Job(){}
